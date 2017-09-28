@@ -57,7 +57,7 @@ io.sockets.on('connection', function (socket) {
         },
         json: true
       }
-      let result = {
+      var result = {
         balance : 0,
         tran : {}
       }
