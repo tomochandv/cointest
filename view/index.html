@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h1>Address Info</h1>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <form>
+              <div class="form-group">
+                <label for="txtAddr">Address</label>
+                <input type="text" class="form-control" id="txtAddr" aria-describedby="emailHelp" placeholder="Enter address">
+                <small id="emailHelp" class="form-text text-muted">bitcoin or ethurium address.</small>
+              </div>
+              <div class="form-group">
+                <label for="txtAddr">Select Coin</label>
+                <select class="form-control">
+                    <option value="btc">BTC</option>
+                    <option value="eth">ETH</option>
+                </select>
+              </div>
+            <button type="button" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
+      </div>
+      <div class="row" style="margin-top: 10px;">
+        <div class="col-12">
+          <div class="alert alert-primary" role="alert" id="divAlert">
+              <i class="fa fa-btc fa-lg"></i> Balance : <span id='balance'>0</span> 
+              &nbsp; <i class="fa fa-american-sign-language-interpreting ßfa-lg"></i> Transaction count : <span id='transaction'>0</span>
+              &nbsp; <i class="fa fa-btc fa-lg"></i> Total received : <span id='received'>0</span> 
+              &nbsp; <i class="fa fa-btc fa-lg"></i> Total sent : <span id='sent'>0</span> 
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <th>hash</th>
+                <th>time</th>
+                <th>weight</th>
+                <th>out</th>
+              </tr>
+            </thead>
+            <tbody>
+             
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.3/socket.io.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
+    <script src="https://use.fontawesome.com/bebc64b983.js"></script>
+    <script>
+      var socket =  io.connect('http://localhost:8080')
+      let addr = ''
+      // socket.on('balance',function (reData){
+      //   console.log(reData) // 100000000
+      //   const obj = JSON.stringify(reData).replace('{\"' + addr + '\":', '')
+      //   const value = JSON.parse(obj.substring(0, obj.length -1))
+      //   $('#balance').text(value.final_balance/100000000)
+      // })
+      socket.on('address',function (reData){
+        console.log(reData) // 100000000
+        $('#balance').text(reData.final_balance/100000000)
+        $('#received').text(reData.total_received/100000000)
+        $('#sent').text(reData.total_sent/100000000)
+        $('#transaction').text(reData.n_tx)
+        if(reData.txs.length > 0){
+          for(var i=0; i < reData.txs.length; i++){
+            let html = '<tr>'
+            html += '<td scope="row">' + reData.txs[i].hash + '</td>'
+            html += '<td>' + Utill.TimeConvert(reData.txs[i].time) + '</td>'
+            html += '<td>' + reData.txs[i].weight + '</td>'
+            html += '<td>' + reData.txs[i].inputs[0].prev_out.addr + '<br><i class="fa fa-long-arrow-right" aria-hidden="true"></i>' 
+              + '<br>' + reData.txs[i].out[0].addr 
+              + '<br><button type="button" class="btn btn-primary"><i class="fa fa-btc fa-lg"></i> ' + (reData.txs[i].out[0].value/100000000) + '</button>'
+              + '</td>'
+            html += '</tr>'
+            $('tbody').append(html)
+          }
+        }
+      })
+      $(function(){
+        $('button').click(function(){
+          addr = $('#txtAddr').val()
+          //socket.emit('balance', { addr: addr, type: $('select').val() })
+          socket.emit('address', { addr: addr, type: $('select').val() })
+        })
+
+        Utill.TimeConvert(1506382083)
+      })
+      //1FRwFXAg7oK3hARsudJC4LCQEdJzJiwEvY
+      //15M6b5GfdQQCkcycm5qEyJFbqp4sZabMah
+      
+      var Utill = {
+        TimeConvert : function(time){
+          const d = new Date(time *1000)
+          const yyyy = d.getFullYear().toString()
+          const mm = (d.getMonth() + 1).toString()
+          const dd = d.getDate().toString()
+          const hh = d.getHours().toString()
+          const min = d.getMinutes().toString()
+          const ss = d.getSeconds().toString()
+          const dateString = yyyy + '-' + (mm.length == 1 ? '0'+ mm : mm) + '-'
+            + (dd.length == 1 ? '0'+dd : dd) + ' ' + (hh.length == 1 ? '0'+hh : hh) + ':' 
+            + (min.length == 1 ? '0'+min : min) + ':' + (ss.length == 1 ? '0'+ss : ss)
+          return dateString
+        }
+      }
+    </script>
+  </body>
+</html>
