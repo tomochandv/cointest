@@ -85,6 +85,7 @@
         $('#sent').text(reData.total_sent/100000000)
         $('#transaction').text(reData.n_tx)
         if(reData.txs.length > 0){
+          $('tbody > tr ').remove()
           for(var i=0; i < reData.txs.length; i++){
             let html = '<tr>'
             html += '<td scope="row">' + reData.txs[i].hash + '</td>'
@@ -108,6 +109,7 @@
         $('#received').text('unknown')
         $('#sent').text('unknown')
         if(reData.tran.length > 0){
+          $('tbody > tr ').remove()
           for(var i=0; i < reData.tran.length; i++){
             let html = '<tr>'
             html += '<td scope="row">' + reData.tran[i].blockHash + '</td>'
