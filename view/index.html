@@ -20,14 +20,17 @@
           <form>
               <div class="form-group">
                 <label for="txtAddr">Address</label>
-                <input type="text" value="0x92f47cA86f9c50220aE5DE8223Ca87aD39D822B1" class="form-control" id="txtAddr" aria-describedby="emailHelp" placeholder="Enter address">
-                <small id="emailHelp" class="form-text text-muted">bitcoin or ethurium address.</small>
+                <input type="text"  class="form-control" id="txtAddr" aria-describedby="emailHelp" placeholder="Enter address">
+                <small id="emailHelp" class="form-text text-muted">bitcoin or ethurium address.
+                  <br> ex btc : 1FRwFXAg7oK3hARsudJC4LCQEdJzJiwEvY
+                  <br> ex eth : 0x92f47cA86f9c50220aE5DE8223Ca87aD39D822B1
+                </small>
               </div>
               <div class="form-group">
                 <label for="txtAddr">Select Coin</label>
                 <select class="form-control">
                     <option value="btc">BTC</option>
-                    <option value="eth" selected>ETH</option>
+                    <option value="eth">ETH</option>
                 </select>
               </div>
             <button type="button" class="btn btn-primary">Submit</button>
@@ -71,8 +74,8 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
     <script src="https://use.fontawesome.com/bebc64b983.js"></script>
     <script>
-      //var socket =  io.connect('http://119.207.78.155:8080')
-      var socket =  io.connect('http://localhost:8080')
+      var socket =  io.connect('http://119.207.78.155:8080')
+      //var socket =  io.connect('http://localhost:8080')
       let addr = ''
       socket.on('btc',function (reData){
         console.log(reData) // 100000000
